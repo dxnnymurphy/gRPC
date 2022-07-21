@@ -18,7 +18,7 @@ class AnomalyServer(AnomalyDetectionServicer):
     def Predict(self, request, context):
         #if refresh = on reload model
         envelope = MyEllipticEnvelope()
-        if request.metrics.refreshhelp == True:
+        if request.metrics.refreshbool == True:
             envelope.refresh()
         else:
             envelope.loadModel()

@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ranomaly.proto\x12\x02pb\x1a\x1fgoogle/protobuf/timestamp.proto\"d\n\x06Metric\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05topic\x18\x02 \x01(\t\x12\x13\n\x0brefreshhelp\x18\x03 \x01(\x08\x12\x0c\n\x04stop\x18\x04 \x01(\x08\"-\n\x0e\x41nomalyRequest\x12\x1b\n\x07metrics\x18\x01 \x03(\x0b\x32\n.pb.Metric\"#\n\x0f\x41nomalyResponse\x12\x10\n\x08response\x18\x01 \x03(\t2H\n\x10\x41nomalyDetection\x12\x34\n\x07Predict\x12\x12.pb.AnomalyRequest\x1a\x13.pb.AnomalyResponse\"\x00\x42 Z\x1egithub.com/dxnnymurphy/gRPC/pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ranomaly.proto\x12\x02pb\x1a\x1fgoogle/protobuf/timestamp.proto\"d\n\x06Metric\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05topic\x18\x02 \x01(\t\x12\x13\n\x0brefreshbool\x18\x03 \x01(\x08\x12\x0c\n\x04stop\x18\x04 \x01(\x08\"-\n\x0e\x41nomalyRequest\x12\x1b\n\x07metrics\x18\x01 \x03(\x0b\x32\n.pb.Metric\"#\n\x0f\x41nomalyResponse\x12\x10\n\x08response\x18\x01 \x03(\t2H\n\x10\x41nomalyDetection\x12\x34\n\x07Predict\x12\x12.pb.AnomalyRequest\x1a\x13.pb.AnomalyResponse\"\x00\x42 Z\x1egithub.com/dxnnymurphy/gRPC/pbb\x06proto3')
 
 
 

@@ -7,7 +7,7 @@ option go_package = "github.com/dxnnymurphy/gRPC/pb";
 message Metric {
     google.protobuf.Timestamp time = 1;
     string topic = 2;
-    bool refreshhelp = 3;
+    bool refreshbool = 3;
     bool stop = 4;
 }
 

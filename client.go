@@ -37,7 +37,7 @@ func dummyData() []*pb.Metric {
 	m := pb.Metric{
 		Time:        Timestamp(t),
 		Topic:       "",
-		Refreshhelp: false,
+		Refreshbool: false,
 		Stop:        false,
 	}
 	out[0] = &m
