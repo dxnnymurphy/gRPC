@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ranomaly.proto\x12\x02pb\x1a\x1fgoogle/protobuf/timestamp.proto\"`\n\x06Metric\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05topic\x18\x02 \x01(\t\x12\x0f\n\x07refresh\x18\x03 \x01(\x08\x12\x0c\n\x04stop\x18\x04 \x01(\x08\"-\n\x0e\x41nomalyRequest\x12\x1b\n\x07metrics\x18\x01 \x03(\x0b\x32\n.pb.Metric\"#\n\x0f\x41nomalyResponse\x12\x10\n\x08response\x18\x01 \x03(\t2H\n\x10\x41nomalyDetection\x12\x34\n\x07Predict\x12\x12.pb.AnomalyRequest\x1a\x13.pb.AnomalyResponse\"\x00\x42 Z\x1egithub.com/dxnnymurphy/gRPC/pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ranomaly.proto\x12\x02pb\x1a\x1fgoogle/protobuf/timestamp.proto\"d\n\x06Metric\x12(\n\x04time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05topic\x18\x02 \x01(\t\x12\x13\n\x0brefreshhelp\x18\x03 \x01(\x08\x12\x0c\n\x04stop\x18\x04 \x01(\x08\"-\n\x0e\x41nomalyRequest\x12\x1b\n\x07metrics\x18\x01 \x03(\x0b\x32\n.pb.Metric\"#\n\x0f\x41nomalyResponse\x12\x10\n\x08response\x18\x01 \x03(\t2H\n\x10\x41nomalyDetection\x12\x34\n\x07Predict\x12\x12.pb.AnomalyRequest\x1a\x13.pb.AnomalyResponse\"\x00\x42 Z\x1egithub.com/dxnnymurphy/gRPC/pbb\x06proto3')
 
 
 
@@ -49,11 +49,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\036github.com/dxnnymurphy/gRPC/pb'
   _METRIC._serialized_start=54
-  _METRIC._serialized_end=150
-  _ANOMALYREQUEST._serialized_start=152
-  _ANOMALYREQUEST._serialized_end=197
-  _ANOMALYRESPONSE._serialized_start=199
-  _ANOMALYRESPONSE._serialized_end=234
-  _ANOMALYDETECTION._serialized_start=236
-  _ANOMALYDETECTION._serialized_end=308
+  _METRIC._serialized_end=154
+  _ANOMALYREQUEST._serialized_start=156
+  _ANOMALYREQUEST._serialized_end=201
+  _ANOMALYRESPONSE._serialized_start=203
+  _ANOMALYRESPONSE._serialized_end=238
+  _ANOMALYDETECTION._serialized_start=240
+  _ANOMALYDETECTION._serialized_end=312
 # @@protoc_insertion_point(module_scope)

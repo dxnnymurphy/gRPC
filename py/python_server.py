@@ -18,7 +18,7 @@ class AnomalyServer(AnomalyDetectionServicer):
     def Predict(self, request, context):
         #if refresh = on reload model
         envelope = MyEllipticEnvelope()
-        if request.metrics.refresh == True:
+        if request.metrics.refreshhelp == True:
             envelope.refresh()
         else:
             envelope.loadModel()
@@ -46,7 +46,7 @@ class AnomalyServer(AnomalyDetectionServicer):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     server = grpc.server(ThreadPoolExecutor())
-    add_AnomalyDetectionServicer_to_server(AnomalyServer, server)
+    add_AnomalyDetectionServicer_to_server(AnomalyServer(), server)
     #change
     port = 9999
     server.add_insecure_port(f'[::]:{port}')

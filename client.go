@@ -35,10 +35,10 @@ func dummyData() []*pb.Metric {
 	t := time.Date(2020, 5, 22, 14, 13, 11, 0, time.UTC)
 	out := make([]*pb.Metric, 1)
 	m := pb.Metric{
-		Time:    Timestamp(t),
-		Topic:   "",
-		Refresh: false,
-		Stop:    false,
+		Time:        Timestamp(t),
+		Topic:       "",
+		Refreshhelp: false,
+		Stop:        false,
 	}
 	out[0] = &m
 	return out
