@@ -15,7 +15,7 @@ elasticsearch_server = ['10.150.49.141:9200', '10.150.49.142:9200', '10.150.49.1
 
 class AnomalyServer(AnomalyDetectionServicer):
 
-    def Predict(self, request, contect):
+    def Predict(self, request, context):
         #if refresh = on reload model
         envelope = MyEllipticEnvelope()
         if request.metrics.refresh == True:

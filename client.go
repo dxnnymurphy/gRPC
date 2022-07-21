@@ -28,23 +28,25 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf(resp.response)
+	log.Printf("%s", resp.Response)
 }
 
-func dummyData() *pb.Metric {
+func dummyData() []*pb.Metric {
 	t := time.Date(2020, 5, 22, 14, 13, 11, 0, time.UTC)
+	out := make([]*pb.Metric, 1)
 	m := pb.Metric{
 		Time:    Timestamp(t),
-		topic:   "",
-		refresh: False,
-		stop:    False,
+		Topic:   "",
+		Refresh: false,
+		Stop:    false,
 	}
-	return m
+	out[0] = &m
+	return out
 }
 
 //will remove
 func Timestamp(t time.Time) *pbtime.Timestamp {
-	return &pb.time.Timestamp{
+	return &pbtime.Timestamp{
 		Seconds: t.Unix(),
 		Nanos:   int32(t.Nanosecond()),
 	}
