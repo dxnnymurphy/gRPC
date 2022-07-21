@@ -7,8 +7,8 @@ option go_package = "github.com/dxnnymurphy/gRPC/pb";
 message Metric {
     google.protobuf.Timestamp time = 1;
     string topic = 2;
-    bool refreshbool = 3;
-    bool stop = 4;
+    string refreshbool = 3;
+    string stop = 4;
 }
 
 message AnomalyRequest {

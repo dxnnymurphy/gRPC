@@ -36,9 +36,9 @@ func dummyData() []*pb.Metric {
 	out := make([]*pb.Metric, 1)
 	m := pb.Metric{
 		Time:        Timestamp(t),
-		Topic:       "",
-		Refreshbool: false,
-		Stop:        false,
+		Topic:       "default",
+		Refreshbool: "false",
+		Stop:        "false",
 	}
 	out[0] = &m
 	return out

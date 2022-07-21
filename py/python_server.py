@@ -18,22 +18,28 @@ class AnomalyServer(AnomalyDetectionServicer):
     def Predict(self, request, context):
         #if refresh = on reload model
         envelope = MyEllipticEnvelope()
-        if request.metrics.refreshbool == True:
-            envelope.refresh()
-        else:
-            envelope.loadModel()
+        for m in request.metrics:
+            if m.refreshbool != "false":
+                envelope.refresh()
+            else:
+                envelope.loadModel()
         
-        if request.metrics.topic == None:
-            topic = "dev_tradingexpert_fixlogtracer_vertex_anomalydetector_executionvolume"
+            if m.topic == "default":
+                topic = "dev_tradingexpert_fixlogtracer_vertex_anomalydetector_executionvolume"
+            else:
+                topic = m.topic
         
-        #think this may be defined in the proxy not in the server
-        today = str(date.today())
+        #will be set to date.today but for debug purposes
+        today = '2022-07-01'
         es = ESClient(elasticsearch_server)
         #atm querys all of day up till now need to change (waste of memory), also may need option for index to query
-        query = "SELECT * FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.17\" IS NOT NULL AND \"spec.fix.37\" IS NOT NULL AND \"spec.fix.35\" != 0 AND \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >=" + today
+        query = "SELECT TOP 100\"@timestamp\", \"spec.fix.PRICE\",  \"spec.fix.EXECID\",  \"spec.fix.ORDERQTY\",  \"spec.fix.EXECTYPE\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= '" + today + "T00:00:00' "
         df_X_predict = es.Query(query)
+        print(len(df_X_predict))
         X_predict = ADUtils.calculateExecutionVolume(df_X_predict)
+        print(len(X_predict))
         results = envelope.predict(X_predict)
+        print(len(results))
         df_anomalies = ADUtils.getAnomalies(df_X_predict, results)
         producer = KafkaProducer(bootstrap_servers=kafka_server)
         df_anomalies = df_anomalies.to_json(orient='records', lines=True).split("\n")
