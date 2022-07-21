@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+package pb;
+
+option go_package = "github.com/dxnnymurphy/gRPC/pb";
+
+message Metric {
+    google.protobuf.Timestamp time = 1;
+    string topic = 2;
+    bool refresh = 3;
+    bool stop = 4;
+}
+
+message AnomalyRequest {
+    repeated Metric metrics = 1;
+}
+
+message AnomalyResponse {
+    repeated string response = 1;
+}
+
+service AnomalyDetection {
+    rpc Predict(AnomalyRequest) returns (AnomalyResponse) {}
+}
