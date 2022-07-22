@@ -35,14 +35,18 @@ class AnomalyServer(AnomalyDetectionServicer):
         #atm querys all of day up till now need to change (waste of memory), also may need option for index to query
         query = "SELECT TOP 100\"@timestamp\", \"spec.fix.PRICE\",  \"spec.fix.EXECID\",  \"spec.fix.ORDERQTY\",  \"spec.fix.EXECTYPE\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= '" + today + "T00:00:00' "
         df_X_predict = es.Query(query)
+        #add to sql 
+        df_X_predict = df_X_predict.loc[(df_X_predict['spec.fix.EXECTYPE'] == 'cancel') | (df_X_predict['spec.fix.EXECTYPE'] == 'eliminate') | (df_X_predict['spec.fix.EXECTYPE'] == 'reject')].copy()
         print(len(df_X_predict))
         X_predict = ADUtils.calculateExecutionVolume(df_X_predict)
         print(len(X_predict))
         results = envelope.predict(X_predict)
         print(len(results))
+        df_X_predict['anomaly'] = results
         df_anomalies = ADUtils.getAnomalies(df_X_predict, results)
-        producer = KafkaProducer(bootstrap_servers=kafka_server)
+        #producer = KafkaProducer(bootstrap_servers=kafka_server)
         df_anomalies = df_anomalies.to_json(orient='records', lines=True).split("\n")
+        print(df_anomalies)
         for item in df_anomalies:
             producer.send(topic, key=b'', value=item)
         string = "Model has been ran"
