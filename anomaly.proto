@@ -5,10 +5,7 @@ package pb;
 option go_package = "github.com/dxnnymurphy/gRPC/pb";
 
 message Metric {
-    google.protobuf.Timestamp time = 1;
-    string topic = 2;
-    string refreshbool = 3;
-    string stop = 4;
+    string topic = 1;
 }
 
 message Metric1 {

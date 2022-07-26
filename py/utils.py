@@ -5,7 +5,7 @@ import pandas as pd
 class ESClient:
     def __init__(self, ip):
         #change this from hardcoding
-        self.es = Elasticsearch(ip, http_auth=("dmurphy", "Queensmead11"), use_ssl=True, verify_certs=False)
+        self.es = Elasticsearch(ip, http_auth=("dmurphy", "Queensmead11"), use_ssl=True, verify_certs=False,timeout=60)
 
     def parseResponse(self,response):
         parsed = []

@@ -17,39 +17,32 @@ elasticsearch_server = ['10.150.49.141:9200', '10.150.49.142:9200', '10.150.49.1
 class AnomalyServer(AnomalyDetectionServicer):
 
     def Predict(self, request, context):
-        #if refresh = on reload model
         envelope = MyEllipticEnvelope()
+        envelope.loadModel()
+        stop = False
         for m in request.metrics:
-            if m.refreshbool != "false":
-                envelope.refresh()
-            else:
-                envelope.loadModel()
-        
-            if m.topic == "default":
-                topic = "dev_tradingexpert_fixlogtracer_vertex_anomalydetector_executionvolume"
-            else:
+            if m.topic:
                 topic = m.topic
-        
-        #will be set to date.today but for debug purposes
-        today = '2022-07-01'
-        es = ESClient(elasticsearch_server)
-        #atm querys all of day up till now need to change (waste of memory), also may need option for index to query
-        query = "SELECT \"@timestamp\", \"spec.fix.PRICE\",  \"spec.fix.EXECID\",  \"spec.fix.ORDERQTY\",  \"spec.fix.EXECTYPE\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= '" + today + "T00:00:00' AND spec.fix.EXECTYPE = 'eliminate'"
-        df_X_predict = es.Query(query)
-        logging.info('model x train: %r', envelope.X_train)
-        logging.info('model contamintation: %r', envelope.contamination)
-        df_X_predict, X_predict = ADUtils.calculateExecutionVolume(df_X_predict)
-        results = envelope.predict(X_predict)
-        df_X_predict['anomaly'] = results
-        df_anomalies = ADUtils.getAnomalies(df_X_predict, results)
-        producer = KafkaProducer(bootstrap_servers=kafka_server)
-        df_anomalies = df_anomalies.to_json(orient='records', lines=True).split("\n")
-        logging.info('%r', len(df_anomalies))
-        for item in df_anomalies:
-            producer.send(topic, key=b'', value=item.encode('utf-8'))
-        string = "Model has been ran"
-        resp = AnomalyResponse(response = string)
-        return resp
+            else:
+                topic = "dev_tradingexpert_fixlogtracer_vertex_anomalydetector_executionvolume"
+            #will be set to date.today but for debug purposes
+            today = '2022-07-01'
+            es = ESClient(elasticsearch_server)
+            #atm querys all of day up till now need to change (waste of memory), also may need option for index to query
+            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\",  \"spec.fix.EXECID\",  \"spec.fix.ORDERQTY\",  \"spec.fix.EXECTYPE\", \"spec.fix.ORDTYPE\", \"spec.fix.SIDE\", \"spec.fix.ORDERID\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"metadata.name\" = 'KEPLE_LD_ULBRIDGE_DMA_RETAIL' AND \"@timestamp\" >= '" + today + "T00:00:00' AND spec.fix.EXECTYPE = 'eliminate'"
+            df_X_predict = es.Query(query)
+            df_X_predict, X_predict = ADUtils.calculateExecutionVolume(df_X_predict)
+            results = envelope.predict(X_predict)
+            df_X_predict['anomaly'] = results
+            df_anomalies = ADUtils.getAnomalies(df_X_predict, results)
+            producer = KafkaProducer(bootstrap_servers=kafka_server)
+            df_anomalies = df_anomalies.to_json(orient='records', lines=True).split("\n")
+            logging.info('%r', len(df_anomalies))
+            for item in df_anomalies:
+                producer.send(topic, key=b'', value=item.encode('utf-8'))
+            string = "Model has been ran"
+            resp = AnomalyResponse(response = string)
+            return resp
     
     def Train(self, request, context):
         for m in request.metrics:
