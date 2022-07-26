@@ -1,13 +1,13 @@
 from utils import ESClient, ADUtils
 from models import MyEllipticEnvelope
-from datetime import date
+from datetime import date, datetime
 from kafka import KafkaProducer
 from concurrent.futures import ThreadPoolExecutor
 import logging
 import grpc
 import numpy as np
 from grpc_reflection.v1alpha import reflection
-from anomaly_pb2 import AnomalyResponse, DESCRIPTOR
+from anomaly_pb2 import AnomalyResponse, DESCRIPTOR, ModelTrainResponse
 from anomaly_pb2_grpc import AnomalyDetectionServicer, add_AnomalyDetectionServicer_to_server
 
 #define global variables
@@ -55,11 +55,16 @@ class AnomalyServer(AnomalyDetectionServicer):
         for m in request.metrics:
             time = []
             if m.startTime:
-                time.append(m.startTime)
+                timestamp = m.startTime
+                time.append(datetime.fromtimestamp(timestamp.seconds + timestamp.nanos).strftime("%Y-%m-%dT%H:%M:%S"))
             if m.endTime:
-                time.append(m.endTime)
+                timestamp = m.endTime
+                time.append(datetime.fromtimestamp(timestamp.seconds + timestamp.nanos).strftime("%Y-%m-%dT%H:%M:%S"))
             envelope = MyEllipticEnvelope()
             envelope.train(time)
+        string = "Model has been trained successfully"
+        resp = ModelTrainResponse(response = string)
+        return resp
 
 
 

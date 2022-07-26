@@ -25,14 +25,14 @@ message AnomalyResponse {
 }
 
 message ModelTrainRequest {
-    repeated Metric metrics = 1;
+    repeated Metric1 metrics = 1;
 }
 
 message ModelTrainResponse {
-    repeated string response =1;
+    repeated string response = 1;
 }
 
 service AnomalyDetection {
     rpc Predict(AnomalyRequest) returns (AnomalyResponse) {}
-    rpc Train(ModelTrainRequest) returns (ModelTrainResponse)
+    rpc Train(ModelTrainRequest) returns (ModelTrainResponse) {}
 }

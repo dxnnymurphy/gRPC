@@ -29,7 +29,7 @@ class MyEllipticEnvelope(EllipticEnvelope):
         json_text = json.dumps(dict_, indent=4)
         encoded = base64.b64encode(bytes(json_text, "utf-8"))
         producer = KafkaProducer(bootstrap_servers=kafka_server)
-        producer.send('dev_tradingexpert_fixlogtracer_vertex_anomalydetector_model', key=b'model', value=encoded)
+        producer.send('dev_tradingexpert_fixlogtracer_vertex_anomalydetector_executionvolume_model', key=b'model', value=encoded)
     
     def loadModel(self):
         es = ESClient(elasticsearch_server)
@@ -43,12 +43,12 @@ class MyEllipticEnvelope(EllipticEnvelope):
     def train(self, time=None):
         #by default will take data from the last 24 hours and retrain the model
         if time:
-            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\", FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" BETWEEN '" + str(time[0]) +"' AND '" + str(time[1]) +"' AND spec.fix.EXECTYPE = 'eliminate'"
+            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" BETWEEN '" + time[0] +"' AND '" + time[1] +"' AND spec.fix.EXECTYPE = 'eliminate'"
         else:
-            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\", FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= NOW() - INTERVAL 1 DAY AND spec.fix.EXECTYPE = 'eliminate'"
+            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= NOW() - INTERVAL 1 DAY AND spec.fix.EXECTYPE = 'eliminate'"
         es = ESClient(elasticsearch_server)
         df = es.Query(query)
-        X_train_new = ADUtils.calculateExecutionVolume(df)
+        df_new, X_train_new = ADUtils.calculateExecutionVolume(df)
         self.X_train = X_train_new
         self.saveModel()
     
