@@ -1,0 +1,8 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    ports:
+      - 58883:9999

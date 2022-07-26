@@ -36,13 +36,12 @@ class ADUtils:
         pass
 
     def calculateExecutionVolume(df):
-        #is this condition correct??
         df['spec.fix.PRICE'] = df['spec.fix.PRICE'].astype(float)
         df['spec.fix.ORDERQTY'] = df['spec.fix.ORDERQTY'].astype(float)
         df['exec_volume'] = (df['spec.fix.ORDERQTY'] * df['spec.fix.PRICE'])
-        df_tidy = df['exec_volume'].dropna()
-        X_values = df_tidy.values.reshape(-1,1)
-        return X_values
+        df_tidy = df.dropna(subset=['exec_volume'])
+        X_values = df_tidy['exec_volume'].values.reshape(-1,1)
+        return df_tidy, X_values
     
     def getAnomalies(df, results):
         df_anomalies = df.loc[df['anomaly'] == -1].drop('anomaly', axis=1)

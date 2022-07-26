@@ -18,7 +18,7 @@ elasticsearch_server = ['10.150.49.141:9200', '10.150.49.142:9200', '10.150.49.1
 
 class MyEllipticEnvelope(EllipticEnvelope):
     
-    def __init__(self, contamination=0.007, X_train=None):
+    def __init__(self, contamination=0.02, X_train=None):
         EllipticEnvelope.__init__(self, contamination=contamination)
         self.X_train = X_train
     
@@ -33,7 +33,7 @@ class MyEllipticEnvelope(EllipticEnvelope):
     
     def loadModel(self):
         es = ESClient(elasticsearch_server)
-        df_model = es.Query("SELECT TOP 1 \"@timestamp\", event.original FROM \"dev_kcde_anomalydetector_model-*\" ORDER BY \"@timestamp\" DESC ")
+        df_model = es.Query("SELECT TOP 1 \"@timestamp\", event.original FROM \"dev_tradingexpert_fixlogtracer_vertex_anomalydetector_model\" ORDER BY \"@timestamp\" DESC ")
         decoded = base64.b64decode(df_model['event.original'].values[0])
         dict_ = json.loads(decoded)
         self.contamination = dict_['contamination']
