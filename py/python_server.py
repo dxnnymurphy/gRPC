@@ -50,6 +50,17 @@ class AnomalyServer(AnomalyDetectionServicer):
         string = "Model has been ran"
         resp = AnomalyResponse(response = string)
         return resp
+    
+    def Train(self, request, context):
+        for m in request.metrics:
+            time = []
+            if m.startTime:
+                time.append(m.startTime)
+            if m.endTime:
+                time.append(m.endTime)
+            envelope = MyEllipticEnvelope()
+            envelope.train(time)
+
 
 
 if __name__ == '__main__':

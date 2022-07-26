@@ -40,12 +40,15 @@ class MyEllipticEnvelope(EllipticEnvelope):
         self.X_train = np.asarray(dict_['X_train']) if dict_['X_train'] != 'None' else None
         self.fit(self.X_train)
     
-    def refresh(self, X_train_new=None):
+    def train(self, time=None):
         #by default will take data from the last 24 hours and retrain the model
-        query = "\"spec.fix.EXECTYPE\",  \"spec.fix.44\",  \"spec.fix.38\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.17\" IS NOT NULL AND \"spec.fix.37\" IS NOT NULL AND \"spec.fix.35\" != 0 AND \"@timestamp\" >= NOW() - INTERVAL 1 DAY"
+        if time:
+            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\", FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" BETWEEN '" + str(time[0]) +"' AND '" + str(time[1]) +"' AND spec.fix.EXECTYPE = 'eliminate'"
+        else:
+            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\", FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= NOW() - INTERVAL 1 DAY AND spec.fix.EXECTYPE = 'eliminate'"
         es = ESClient(elasticsearch_server)
         df = es.Query(query)
         X_train_new = ADUtils.calculateExecutionVolume(df)
-        self.fit(X_train_new)
+        self.X_train = X_train_new
         self.saveModel()
     
