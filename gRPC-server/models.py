@@ -45,10 +45,9 @@ class MyEllipticEnvelope(EllipticEnvelope):
         if time:
             query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" BETWEEN '" + time[0] +"' AND '" + time[1] +"' AND spec.fix.EXECTYPE = 'eliminate'"
         else:
-            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= NOW() - INTERVAL 1 DAY AND spec.fix.EXECTYPE = 'eliminate'"
+            query = "SELECT \"@timestamp\", \"spec.fix.PRICE\", \"spec.fix.ORDERQTY\" FROM  \"dev_tradingexpert_fixlogtracer_source_rawfixlogs-*\" WHERE \"spec.fix.EXECTYPE\" IS NOT NULL AND \"@timestamp\" >= NOW() - INTERVAL 1 DAY"
         es = ESClient(elasticsearch_server)
         df = es.Query(query)
         df_new, X_train_new = ADUtils.calculateExecutionVolume(df)
         self.X_train = X_train_new
         self.saveModel()
-    

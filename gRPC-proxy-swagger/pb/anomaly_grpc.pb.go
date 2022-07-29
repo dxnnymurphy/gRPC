@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AnomalyDetectionClient interface {
 	Predict(ctx context.Context, in *AnomalyRequest, opts ...grpc.CallOption) (*AnomalyResponse, error)
+	Train(ctx context.Context, in *ModelTrainRequest, opts ...grpc.CallOption) (*ModelTrainResponse, error)
 }
 
 type anomalyDetectionClient struct {
@@ -42,11 +43,21 @@ func (c *anomalyDetectionClient) Predict(ctx context.Context, in *AnomalyRequest
 	return out, nil
 }
 
+func (c *anomalyDetectionClient) Train(ctx context.Context, in *ModelTrainRequest, opts ...grpc.CallOption) (*ModelTrainResponse, error) {
+	out := new(ModelTrainResponse)
+	err := c.cc.Invoke(ctx, "/pb.AnomalyDetection/Train", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AnomalyDetectionServer is the server API for AnomalyDetection service.
 // All implementations must embed UnimplementedAnomalyDetectionServer
 // for forward compatibility
 type AnomalyDetectionServer interface {
 	Predict(context.Context, *AnomalyRequest) (*AnomalyResponse, error)
+	Train(context.Context, *ModelTrainRequest) (*ModelTrainResponse, error)
 	mustEmbedUnimplementedAnomalyDetectionServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedAnomalyDetectionServer struct {
 
 func (UnimplementedAnomalyDetectionServer) Predict(context.Context, *AnomalyRequest) (*AnomalyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Predict not implemented")
+}
+func (UnimplementedAnomalyDetectionServer) Train(context.Context, *ModelTrainRequest) (*ModelTrainResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Train not implemented")
 }
 func (UnimplementedAnomalyDetectionServer) mustEmbedUnimplementedAnomalyDetectionServer() {}
 
@@ -88,6 +102,24 @@ func _AnomalyDetection_Predict_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AnomalyDetection_Train_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ModelTrainRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnomalyDetectionServer).Train(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AnomalyDetection/Train",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnomalyDetectionServer).Train(ctx, req.(*ModelTrainRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AnomalyDetection_ServiceDesc is the grpc.ServiceDesc for AnomalyDetection service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var AnomalyDetection_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Predict",
 			Handler:    _AnomalyDetection_Predict_Handler,
+		},
+		{
+			MethodName: "Train",
+			Handler:    _AnomalyDetection_Train_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

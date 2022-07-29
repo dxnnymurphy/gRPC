@@ -1,0 +1,8 @@
+services:
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile_1
+      network: host
+    ports:
+      - 58884:8081
